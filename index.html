@@ -3,599 +3,692 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Road to Regionals 🥏</title>
-  <!-- Lucide Icons Library -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <title>Teammate Checklist 🦥</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cream: {
+              50: '#fdfbf7',
+              100: '#fbf8f1',
+              200: '#f5edd9',
+              300: '#eddcb5',
+            },
+            charcoal: {
+              800: '#2a2825',
+              900: '#1e1e1e',
+            },
+            pastel: {
+              pink: '#ffb7b2',
+              pinkHover: '#ff9e97',
+              sage: '#b5ead7',
+              sageHover: '#98dfc6',
+              yellow: '#e2f0cb',
+              peach: '#ffdac1',
+            }
+          },
+          fontFamily: {
+            sans: ['Fredoka', 'Quicksand', 'Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Global Styles */
-    :root {
-      --primary: #0055ff;
-      --primary-dark: #003bb3;
-      --accent: #ff0055;
-      --bg: #f4f7f6;
-      --card-bg: #ffffff;
-      --text: #333333;
-      --sidebar-width: 70px;
+    body { font-family: 'Fredoka', 'Quicksand', sans-serif; }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f5edd9; border-radius: 8px; }
+    ::-webkit-scrollbar-thumb { background: #1e1e1e; border-radius: 8px; }
+
+    /* Custom Checkbox Animation */
+    .sloth-checkbox {
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .sloth-checkbox:active {
+      transform: scale(0.88);
     }
 
-    * {
-      box-sizing: border-box;
+    /* Linocut Border Effect */
+    .linocut-card {
+      border: 3px solid #1e1e1e;
+      box-shadow: 4px 4px 0px #1e1e1e;
     }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 0;
-      display: flex;
-      min-height: 100vh;
-      overflow-x: hidden;
+    .linocut-card-sm {
+      border: 2px solid #1e1e1e;
+      box-shadow: 3px 3px 0px #1e1e1e;
     }
-
-    /* Left Icon Sidebar */
-    nav {
-      width: var(--sidebar-width);
-      background: #ffffff;
-      border-right: 1px solid #e0e0e0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 1.5rem;
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      z-index: 100;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.03);
+    .linocut-btn {
+      border: 2px solid #1e1e1e;
+      box-shadow: 2px 3px 0px #1e1e1e;
+      transition: all 0.15s ease;
     }
-
-    .tab-btn {
-      background: none;
-      border: none;
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      margin-bottom: 1rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #666;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      position: relative;
+    .linocut-btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 4px 0px #1e1e1e;
     }
-
-    .tab-btn:hover {
-      background: #f0f4ff;
-      color: var(--primary);
+    .linocut-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0px 0px 0px #1e1e1e;
     }
-
     .tab-btn.active {
-      background: var(--primary);
-      color: white;
-      box-shadow: 0 4px 10px rgba(0, 85, 255, 0.3);
-    }
-
-    /* Tooltip on hover for icons */
-    .tab-btn::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      left: 60px;
-      background: #333;
-      color: #fff;
-      padding: 4px 8px;
-      font-size: 0.75rem;
-      border-radius: 4px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-      font-weight: bold;
-    }
-
-    .tab-btn:hover::after {
-      opacity: 1;
-    }
-
-    /* Main Content Wrapper */
-    .wrapper {
-      margin-left: var(--sidebar-width);
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    header {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white;
-      text-align: center;
-      padding: 2.5rem 1rem 1.5rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    header h1 {
-      margin: 0 0 0.5rem 0;
-      font-size: 2.2rem;
-    }
-
-    /* Countdown Timer */
-    .countdown-container {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(5px);
-      display: inline-block;
-      padding: 1rem 2rem;
-      border-radius: 12px;
-      margin-top: 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .countdown-timer {
-      display: flex;
-      gap: 1.5rem;
-      justify-content: center;
-      font-weight: bold;
-    }
-
-    .timer-block {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .timer-number {
-      font-size: 1.8rem;
-    }
-
-    .timer-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      opacity: 0.8;
-    }
-
-    /* Main Content Area */
-    main {
-      max-width: 800px;
-      width: 100%;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-
-    .tab-content {
-      display: none;
-      background: var(--card-bg);
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    h2 {
-      margin-top: 0;
-      color: var(--primary-dark);
-    }
-
-    /* Interactive Checklist */
-    .checklist-item {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid #eee;
-    }
-
-    .checklist-item input {
-      width: 18px;
-      height: 18px;
-      margin-right: 12px;
-      cursor: pointer;
-    }
-
-    .checklist-item label {
-      cursor: pointer;
-      font-size: 1.05rem;
-    }
-
-    .checklist-item input:checked + label {
-      text-decoration: line-through;
-      color: #a0a0a0;
-    }
-
-    /* Schedule Timeline */
-    .schedule-event {
-      padding: 1rem 1.25rem;
-      border-left: 4px solid var(--primary);
-      background: #0055ff0a;
-      margin-bottom: 1rem;
-      border-radius: 0 8px 8px 0;
-    }
-
-    .schedule-event.highlight {
-      border-left: 4px solid var(--accent);
-      background: #ff005510;
-    }
-
-    .schedule-event h4 {
-      margin: 0 0 0.25rem 0;
-      color: var(--text);
-      font-size: 1.1rem;
-    }
-
-    .schedule-event p {
-      margin: 0;
-      font-size: 0.95rem;
-      color: #555;
-    }
-
-    /* Scouting Report Grid & Disintegration Effect */
-    .scouting-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-top: 1.5rem;
-    }
-
-    .team-box {
-      background: linear-gradient(135deg, #2b32b2, #1488cc);
-      color: white;
-      padding: 2.5rem 1.5rem;
-      border-radius: 16px;
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(20, 136, 204, 0.25);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      position: relative;
-      user-select: none;
-    }
-
-    .team-box:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 25px rgba(20, 136, 204, 0.35);
-    }
-
-    .team-box span {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: normal;
-      opacity: 0.85;
-      margin-top: 0.5rem;
-    }
-
-    /* Particle Styling for Disintegration */
-    .particle {
-      position: fixed;
-      pointer-events: none;
-      border-radius: 50%;
-      z-index: 9999;
-      animation: popAndFade 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
-    }
-
-    @keyframes popAndFade {
-      0% {
-        transform: translate(0, 0) scale(1);
-        opacity: 1;
-      }
-      100% {
-        transform: translate(var(--dx), var(--dy)) scale(0);
-        opacity: 0;
-      }
-    }
-
-    /* Anonymous Shoutouts */
-    .shoutout-form textarea {
-      width: 100%;
-      height: 80px;
-      padding: 0.75rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-sizing: border-box;
-      resize: vertical;
-      font-family: inherit;
-    }
-
-    .shoutout-form button {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 0.6rem 1.2rem;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 0.5rem;
-    }
-
-    .shoutouts-list {
-      margin-top: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .shoutout-card {
-      background: #fff5f8;
-      border-left: 4px solid var(--accent);
-      padding: 1rem;
-      border-radius: 0 8px 8px 0;
-      font-style: italic;
+      background-color: #ffb7b2;
+      color: #1e1e1e;
     }
   </style>
 </head>
-<body>
+<body class="bg-cream-100 text-charcoal-900 min-h-screen pb-12 transition-colors duration-200">
 
-  <!-- Left Sidebar Navigation -->
-  <nav>
-    <button class="tab-btn active" onclick="switchTab(this, 'checklist')" data-tooltip="Checklist">
-      <i data-lucide="check-square"></i>
-    </button>
-    <button class="tab-btn" onclick="switchTab(this, 'schedule')" data-tooltip="Schedule">
-      <i data-lucide="calendar"></i>
-    </button>
-    <button class="tab-btn" onclick="switchTab(this, 'scouting')" data-tooltip="Scouting Report">
-      <i data-lucide="binoculars"></i>
-    </button>
-    <button class="tab-btn" onclick="switchTab(this, 'expect')" data-tooltip="What to Expect">
-      <i data-lucide="worm"></i>
-    </button>
-    <button class="tab-btn" onclick="switchTab(this, 'shoutouts')" data-tooltip="Shoutouts">
-      <i data-lucide="snail"></i>
-    </button>
-  </nav>
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 bg-charcoal-900 text-cream-50 px-5 py-3.5 rounded-2xl linocut-card-sm">
+    <span class="text-xl">🦥</span>
+    <span id="toast-msg" class="font-semibold text-sm">Copied to clipboard!</span>
+  </div>
 
-  <!-- Page Wrapper -->
-  <div class="wrapper">
-    <!-- Header Section -->
-    <header>
-      <h1>Road to Regionals 🥏</h1>
-      <p>Win Regionals ➔ Ticket to Nationals!</p>
-      
-      <!-- Game Timer -->
-      <div class="countdown-container">
-        <div style="font-size: 0.85rem; margin-bottom: 0.5rem;">NEXT GAME IN:</div>
-        <div class="countdown-timer" id="timer">
-          <div class="timer-block"><span class="timer-number" id="days">00</span><span class="timer-label">Days</span></div>
-          <div class="timer-block"><span class="timer-number" id="hours">00</span><span class="timer-label">Hours</span></div>
-          <div class="timer-block"><span class="timer-number" id="mins">00</span><span class="timer-label">Mins</span></div>
-          <div class="timer-block"><span class="timer-number" id="secs">00</span><span class="timer-label">Secs</span></div>
+  <div class="max-w-4xl mx-auto px-4 pt-6 md:pt-10">
+    
+    <!-- Top Header -->
+    <header class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 bg-cream-50 p-6 rounded-3xl linocut-card relative overflow-hidden">
+      <div class="flex items-center gap-4 z-10">
+        <!-- Sloth Mascot Logo Vector SVG -->
+        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-cream-200 rounded-2xl flex items-center justify-center p-1.5 border-2 border-charcoal-900 flex-shrink-0 shadow-sm rotate-[-2deg]">
+          <svg viewBox="0 0 300 250" class="w-full h-full text-charcoal-900 fill-current">
+            <!-- Outer Linocut Sloth Outline -->
+            <path d="M 60,30 C 110,10 190,15 240,40 C 270,55 285,90 280,130 C 275,170 265,210 255,230 C 248,245 230,245 220,230 C 210,215 205,190 200,165 C 190,165 170,165 150,170 C 145,195 138,225 125,240 C 115,250 95,245 90,225 C 85,205 85,150 80,120 C 70,120 50,110 35,90 C 20,70 20,45 40,35 C 48,30 55,30 60,30 Z" fill="#1e1e1e"/>
+            <!-- Inner Cream Head Contour -->
+            <path d="M 65,45 C 95,35 120,40 125,65 C 130,90 120,115 90,120 C 65,122 40,105 38,80 C 36,58 48,48 65,45 Z" fill="#fbf8f1"/>
+            <!-- Left Eye Patch (X-Eye) -->
+            <path d="M 48,60 C 58,55 68,62 65,75 C 62,85 50,88 43,80 C 38,72 40,62 48,60 Z" fill="#1e1e1e"/>
+            <path d="M 45,63 L 61,77 M 61,63 L 45,77" stroke="#fbf8f1" stroke-width="4.5" stroke-linecap="round"/>
+            <!-- Right Eye Patch (X-Eye) -->
+            <path d="M 92,62 C 102,58 112,65 109,78 C 106,88 94,90 87,82 C 82,75 84,65 92,62 Z" fill="#1e1e1e"/>
+            <path d="M 89,65 L 105,79 M 105,65 L 89,79" stroke="#fbf8f1" stroke-width="4.5" stroke-linecap="round"/>
+            <!-- Nose & Mouth -->
+            <path d="M 72,82 Q 77,78 82,82 Q 77,88 72,82 Z" fill="#1e1e1e"/>
+            <path d="M 77,85 L 77,93 M 71,93 Q 77,97 83,93" stroke="#1e1e1e" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <!-- Cute Back Tail Knob -->
+            <path d="M 275,100 C 290,105 290,125 275,130 Z" fill="#1e1e1e"/>
+            <!-- Claws -->
+            <path d="M 88,225 L 90,242 M 95,225 L 98,244 M 102,225 L 105,242" stroke="#fbf8f1" stroke-width="4" stroke-linecap="round"/>
+            <path d="M 222,230 L 225,246 M 229,230 L 233,248 M 236,230 L 240,246" stroke="#fbf8f1" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-pastel-pink text-charcoal-900 font-bold text-xs uppercase tracking-wider border border-charcoal-900 mb-1">
+            <span>🦥 Roster Checklist</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-charcoal-900">
+            Teammate Tracker
+          </h1>
+          <p class="text-xs sm:text-sm text-charcoal-800/70 font-semibold mt-0.5">
+            Keep track & copy attendance straight to your notes!
+          </p>
         </div>
       </div>
+
+      <!-- Action Button -->
+      <button id="btn-add-member" class="linocut-btn bg-pastel-pink hover:bg-pastel-pinkHover text-charcoal-900 font-bold px-4 py-2.5 rounded-2xl text-sm flex items-center gap-2 z-10 self-stretch sm:self-auto justify-center">
+        <i class="fa-solid fa-plus text-xs"></i>
+        <span>Add Teammate</span>
+      </button>
     </header>
 
-    <!-- Content Sections -->
-    <main>
+    <!-- Sloth Status & Progress Card -->
+    <div class="bg-cream-50 rounded-3xl p-5 sm:p-6 mb-6 linocut-card relative overflow-hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl" id="sloth-mood">🦥</span>
+          <div>
+            <div id="sloth-status-text" class="font-bold text-sm text-charcoal-900">
+              Hanging in there!
+            </div>
+            <div class="text-xs text-charcoal-800/60 font-semibold">
+              <span id="checked-count">0</span> of <span id="total-count">0</span> teammates checked
+            </div>
+          </div>
+        </div>
 
-      <!-- Checklist Tab -->
-      <div id="checklist" class="tab-content active">
-        <h2>Packing & Preparation Checklist</h2>
-        <div class="checklist-item"><input type="checkbox" id="c1"><label for="c1">Jerseys (Light & Dark)</label></div>
-        <div class="checklist-item"><input type="checkbox" id="c2"><label for="c2">Spandex</label></div>
-        <div class="checklist-item"><input type="checkbox" id="c3"><label for="c3">Cleats</label></div>
-        <div class="checklist-item"><input type="checkbox" id="c4"><label for="c4">Personal gear</label></div>
-        <div class="checklist-item"><input type="checkbox" id="c5"><label for="c5">Rain gear</label></div>
-        <div class="checklist-item"><input type="checkbox" id="c6"><label for="c6">Water bottles</label></div>
-        <div class="checklist-item"><input type="checkbox" id="c7"><label for="c7">Snacks</label></div>
-        <div class="checklist-item"><input type="checkbox" id="c8"><label for="c8">Electrolytes</label></div>
-        <div class="checklist-item"><input type="checkbox" id="c9"><label for="c9">Any other personal belongings</label></div>
+        <div class="flex items-center gap-2 self-start sm:self-auto">
+          <span id="percentage-badge" class="px-3.5 py-1 bg-pastel-sage border-2 border-charcoal-900 text-charcoal-900 font-extrabold text-sm rounded-full shadow-sm">
+            0%
+          </span>
+        </div>
       </div>
 
-      <!-- Schedule Tab -->
-      <div id="schedule" class="tab-content">
-        <h2>Remaining Season Schedule</h2>
-        
-        <div class="schedule-event">
-          <h4>Tuesday 9/15 — Workout Group</h4>
-          <p>📍 Danehy Fields • ⏰ 6:00 PM</p>
-        </div>
-
-        <div class="schedule-event">
-          <h4>Thursday 9/17 — SFFT</h4>
-          <p>📍 Cumnock • ⏰ 6:00 PM</p>
-        </div>
-
-        <div class="schedule-event">
-          <h4>Saturday 9/19 — Practice</h4>
-          <p>📍 Location TBD • ⏰ Time TBD</p>
-        </div>
-
-        <div class="schedule-event">
-          <h4>Sunday 9/20 — Practice</h4>
-          <p>📍 Location TBD • ⏰ Time TBD</p>
-        </div>
-
-        <div class="schedule-event">
-          <h4>Tuesday 9/22 — Workout Group</h4>
-          <p>📍 Danehy Fields • ⏰ 6:00 PM</p>
-        </div>
-
-        <div class="schedule-event">
-          <h4>Thursday 9/24 — SFFT</h4>
-          <p>📍 Cumnock • ⏰ 6:00 PM</p>
-        </div>
-
-        <div class="schedule-event">
-          <h4>Friday 9/25 — Team Pasta Dinner 🍝</h4>
-          <p>📍 Piers & Anna's • ⏰ 6:00 PM – 8:00 PM</p>
-        </div>
-
-        <div class="schedule-event highlight">
-          <h4>Saturday 9/26 — REGIONALS DAY 1 🥏</h4>
-          <p>🔥 <strong>WIN ALL OUR GAMES!</strong> • ⏰ 9:00 AM – 5:00 PM</p>
-        </div>
-
-        <div class="schedule-event highlight">
-          <h4>Sunday 9/27 — REGIONALS DAY 2 🏆</h4>
-          <p>🔥 <strong>WIN ALL OUR GAMES!</strong> • ⏰ 9:00 AM – 3:00 PM</p>
-        </div>
-
+      <!-- Chunky Progress Bar -->
+      <div class="w-full bg-cream-200 border-2 border-charcoal-900 rounded-full h-5 overflow-hidden p-0.5 relative">
+        <div id="progress-bar" class="bg-pastel-sage border-r-2 border-charcoal-900 h-full rounded-full transition-all duration-300 w-0"></div>
       </div>
+    </div>
 
-      <!-- Scouting Tab -->
-      <div id="scouting" class="tab-content">
-        <h2>Opponent Scouting Reports</h2>
-        <p>Click a team box to open their scouting doc!</p>
-        <div class="scouting-grid">
-          
-          <div class="team-box" data-url="https://docs.google.com/document/d/YOUR_WILD_CARD_DOC_ID/edit" onclick="disintegrateAndOpen(this)">
-            Wild Card
-            <span>Click to view scouting doc 📄</span>
+    <!-- Main Grid Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Left Sidebar: Copy Controls -->
+      <div class="lg:col-span-1 space-y-6">
+
+        <!-- Copy Options Box -->
+        <div class="bg-cream-50 rounded-3xl p-5 linocut-card space-y-4">
+          <h2 class="text-sm font-extrabold text-charcoal-900 uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-copy text-pastel-pink"></i>
+            Copy to Notes App
+          </h2>
+
+          <!-- Export Style Selector -->
+          <div>
+            <label class="block text-xs font-bold text-charcoal-800/70 mb-1.5">Note Style Format</label>
+            <select id="format-select" class="w-full bg-cream-100 border-2 border-charcoal-900 text-charcoal-900 font-bold text-xs sm:text-sm rounded-2xl p-2.5 focus:outline-none focus:ring-2 focus:ring-pastel-pink">
+              <option value="emoji" selected>🦥 Sloth Emoji (✅ Name / ❌ Name)</option>
+              <option value="brackets">Square Brackets ([x] Name / [ ] Name)</option>
+              <option value="markdown">Markdown (- [x] Name)</option>
+              <option value="bullets">Bullets (• Name)</option>
+              <option value="plain">Plain Names Only</option>
+            </select>
           </div>
 
-          <div class="team-box" data-url="https://docs.google.com/document/d/YOUR_SPROCKET_DOC_ID/edit" onclick="disintegrateAndOpen(this)">
-            Sprocket
-            <span>Click to view scouting doc 📄</span>
-          </div>
+          <!-- Main Export Copy Buttons -->
+          <div class="space-y-2.5 pt-1">
+            <button id="btn-copy-all" class="linocut-btn w-full bg-pastel-pink hover:bg-pastel-pinkHover text-charcoal-900 font-extrabold text-sm py-3 px-4 rounded-2xl flex items-center justify-between">
+              <span class="flex items-center gap-2">
+                <i class="fa-solid fa-paste"></i> Copy All
+              </span>
+              <i class="fa-solid fa-arrow-right text-xs"></i>
+            </button>
 
-          <div class="team-box" data-url="https://docs.google.com/document/d/YOUR_GRAND_ARMY_DOC_ID/edit" onclick="disintegrateAndOpen(this)">
-            Grand Army
-            <span>Click to view scouting doc 📄</span>
-          </div>
+            <button id="btn-copy-checked" class="linocut-btn w-full bg-pastel-sage hover:bg-pastel-sageHover text-charcoal-900 font-extrabold text-sm py-3 px-4 rounded-2xl flex items-center justify-between">
+              <span class="flex items-center gap-2">
+                <i class="fa-solid fa-circle-check"></i> Copy Checked (Present)
+              </span>
+              <span id="badge-checked" class="text-xs bg-cream-50 border border-charcoal-900 px-2 py-0.5 rounded-full font-bold">0</span>
+            </button>
 
-          <div class="team-box" data-url="https://docs.google.com/document/d/YOUR_XIST_DOC_ID/edit" onclick="disintegrateAndOpen(this)">
-            XIST
-            <span>Click to view scouting doc 📄</span>
+            <button id="btn-copy-unchecked" class="linocut-btn w-full bg-pastel-peach text-charcoal-900 font-extrabold text-sm py-3 px-4 rounded-2xl flex items-center justify-between">
+              <span class="flex items-center gap-2">
+                <i class="fa-solid fa-circle-xmark"></i> Copy Unchecked (Absent)
+              </span>
+              <span id="badge-unchecked" class="text-xs bg-cream-50 border border-charcoal-900 px-2 py-0.5 rounded-full font-bold">0</span>
+            </button>
           </div>
-
         </div>
+
       </div>
 
-      <!-- What to Expect Tab -->
-      <div id="expect" class="tab-content">
-        <h2>What to Expect at Regionals 🪱</h2>
-        <ul>
-          <li><strong>Physicality:</strong> High intensity every point. Stay sharp and communicate on the field.</li>
-          <li><strong>Weather & Conditions:</strong> Be prepared for wind and weather changes—bring layers!</li>
-          <li><strong>Mindset:</strong> One point at a time. Support your teammates through any runs.</li>
-        </ul>
+      <!-- Right Column: Search, Filter Tabs & Teammates Checklist -->
+      <div class="lg:col-span-2 space-y-4">
+
+        <!-- Search Bar & Status Filter Tabs -->
+        <div class="space-y-3">
+          <!-- Search Bar -->
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-charcoal-800/50 text-sm"></i>
+            <input type="text" id="search-input" placeholder="Search teammate name..." 
+                   class="w-full pl-11 pr-10 py-3 bg-cream-50 border-2 border-charcoal-900 rounded-2xl text-charcoal-900 font-bold text-sm placeholder-charcoal-800/40 focus:outline-none focus:ring-2 focus:ring-pastel-pink shadow-[3px_3px_0px_#1e1e1e] transition">
+            <button id="clear-search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-charcoal-800/50 hover:text-charcoal-900 p-1">
+              <i class="fa-solid fa-circle-xmark text-base"></i>
+            </button>
+          </div>
+
+          <!-- Status Filter Tabs -->
+          <div class="flex items-center gap-2 bg-cream-50 p-1.5 rounded-2xl border-2 border-charcoal-900 shadow-[2px_2px_0px_#1e1e1e]">
+            <button id="tab-all" class="tab-btn active flex-1 py-1.5 px-3 rounded-xl text-xs font-bold transition text-center" data-filter="all">
+              All <span id="tab-count-all" class="opacity-75">(0)</span>
+            </button>
+            <button id="tab-checked" class="tab-btn flex-1 py-1.5 px-3 rounded-xl text-xs font-bold transition text-center text-charcoal-800/70 hover:text-charcoal-900" data-filter="checked">
+              Checked <span id="tab-count-checked" class="opacity-75">(0)</span>
+            </button>
+            <button id="tab-unchecked" class="tab-btn flex-1 py-1.5 px-3 rounded-xl text-xs font-bold transition text-center text-charcoal-800/70 hover:text-charcoal-900" data-filter="unchecked">
+              Unchecked <span id="tab-count-unchecked" class="opacity-75">(0)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Teammate Items Grid -->
+        <div id="checklist-container" class="space-y-2.5 max-h-[620px] overflow-y-auto pr-1">
+          <!-- Dynamically Rendered -->
+        </div>
+
+        <!-- Empty Search State -->
+        <div id="empty-state" class="hidden text-center py-12 bg-cream-50 rounded-3xl linocut-card p-6">
+          <div class="w-16 h-16 mx-auto mb-3 opacity-60">
+            <svg viewBox="0 0 300 250" class="w-full h-full text-charcoal-900 fill-current">
+              <path d="M 60,30 C 110,10 190,15 240,40 C 270,55 285,90 280,130 C 275,170 265,210 255,230 C 248,245 230,245 220,230 C 210,215 205,190 200,165 C 190,165 170,165 150,170 C 145,195 138,225 125,240 C 115,250 95,245 90,225 C 85,205 85,150 80,120 C 70,120 50,110 35,90 C 20,70 20,45 40,35 C 48,30 55,30 60,30 Z"/>
+            </svg>
+          </div>
+          <p class="text-charcoal-900 font-bold text-base">No teammates found</p>
+          <p class="text-xs text-charcoal-800/60 font-semibold mt-1">Try searching or switching filter tab!</p>
+        </div>
+
       </div>
 
-      <!-- Anonymous Shoutouts Tab -->
-      <div id="shoutouts" class="tab-content">
-        <h2>Anonymous Team Shoutouts 🐚</h2>
-        <p>Send some hype or appreciation to a teammate anonymously!</p>
-        <div class="shoutout-form">
-          <textarea id="shoutoutInput" placeholder="S/O to Sarah for those insane layouts in practice!"></textarea>
-          <button onclick="addShoutout()">Post Hype</button>
-        </div>
-        <div class="shoutouts-list" id="shoutoutsList">
-          <div class="shoutout-card">"Hyped for this weekend! Let's bring home the W!"</div>
-          <div class="shoutout-card">"Shoutout to the handlers for working in that heavy wind last practice!"</div>
-        </div>
+    </div>
+
+  </div>
+
+  <!-- Add Teammate Modal -->
+  <div id="add-modal" class="fixed inset-0 bg-charcoal-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
+    <div class="bg-cream-50 rounded-3xl linocut-card max-w-md w-full p-6 space-y-4 transform scale-95 transition-transform duration-200" id="modal-box">
+      <div class="flex justify-between items-center">
+        <h3 class="text-lg font-extrabold text-charcoal-900 flex items-center gap-2">
+          <span>🦥</span> Add Teammate(s)
+        </h3>
+        <button id="close-modal" class="text-charcoal-800/50 hover:text-charcoal-900 p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
       </div>
 
-    </main>
+      <p class="text-xs font-semibold text-charcoal-800/70">
+        Enter names below. Separate multiple teammates with commas or lines to add a bunch at once!
+      </p>
+
+      <textarea id="modal-input" rows="3" placeholder="e.g. Sam Rivera, Jamie Taylor" class="w-full bg-cream-100 border-2 border-charcoal-900 rounded-2xl p-3 text-charcoal-900 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-pastel-pink"></textarea>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button id="cancel-modal-btn" class="px-4 py-2 rounded-xl text-xs font-bold text-charcoal-800/70 hover:bg-cream-200 transition">
+          Cancel
+        </button>
+        <button id="save-modal-btn" class="linocut-btn bg-pastel-pink hover:bg-pastel-pinkHover text-charcoal-900 font-extrabold px-5 py-2 rounded-xl text-xs">
+          Add Person
+        </button>
+      </div>
+    </div>
   </div>
 
   <script>
-    // Initialize Lucide Icons
-    lucide.createIcons();
+    // Initial 38 Provided Teammates
+    const DEFAULT_TEAMMATES = [
+      "Marshall G", "Marshall L", "Sophia", "Alex", "Anna MacNaughton",
+      "Ben Sadok", "Bubbles", "Caelan McSweeney", "Cam Levine", "Chloe de Campos",
+      "Chloë Rowse", "Christian Foster", "Davis Whitehead", "Delaney Reardon",
+      "Ella Widmyer", "Emma Palacio", "Emma Remien", "Erin Rea", "Geir Hartl",
+      "Gus Haflin", "Jac Carreiro", "Jackson McGuinness", "Jae Cruz", "Kat Brock",
+      "Lily Yan", "Makk", "Malachi Raymond", "Olivia Hampton", "Peter Prial",
+      "Piers MacNaughton", "Ray Tetreault", "Ryan Cardinal", "Sarah Jeung",
+      "Tomo Liou", "Tyler Chan", "Wes Yan", "Yuge Xiao"
+    ];
 
-    // Tab Navigation Logic
-    function switchTab(btnElement, tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      
-      document.getElementById(tabId).classList.add('active');
-      btnElement.classList.add('active');
+    let teammates = [];
+    let currentFilter = 'all'; // 'all', 'checked', 'unchecked'
+    const STORAGE_KEY = 'cute_sloth_checklist_v2';
+
+    // DOM Elements
+    const checklistContainer = document.getElementById('checklist-container');
+    const searchInput = document.getElementById('search-input');
+    const clearSearchBtn = document.getElementById('clear-search');
+    const emptyState = document.getElementById('empty-state');
+    const checkedCountEl = document.getElementById('checked-count');
+    const totalCountEl = document.getElementById('total-count');
+    const percentageBadge = document.getElementById('percentage-badge');
+    const progressBar = document.getElementById('progress-bar');
+    const badgeChecked = document.getElementById('badge-checked');
+    const badgeUnchecked = document.getElementById('badge-unchecked');
+    const formatSelect = document.getElementById('format-select');
+    const slothStatusText = document.getElementById('sloth-status-text');
+    const slothMood = document.getElementById('sloth-mood');
+
+    // Filter Tabs
+    const tabAll = document.getElementById('tab-all');
+    const tabChecked = document.getElementById('tab-checked');
+    const tabUnchecked = document.getElementById('tab-unchecked');
+    const tabCountAll = document.getElementById('tab-count-all');
+    const tabCountChecked = document.getElementById('tab-count-checked');
+    const tabCountUnchecked = document.getElementById('tab-count-unchecked');
+
+    // Buttons
+    const btnCopyAll = document.getElementById('btn-copy-all');
+    const btnCopyChecked = document.getElementById('btn-copy-checked');
+    const btnCopyUnchecked = document.getElementById('btn-copy-unchecked');
+    const btnAddMember = document.getElementById('btn-add-member');
+
+    // Modal
+    const addModal = document.getElementById('add-modal');
+    const modalBox = document.getElementById('modal-box');
+    const closeModalBtn = document.getElementById('close-modal');
+    const cancelModalBtn = document.getElementById('cancel-modal-btn');
+    const saveModalBtn = document.getElementById('save-modal-btn');
+    const modalInput = document.getElementById('modal-input');
+
+    // Toast
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toast-msg');
+    let toastTimeout;
+
+    function init() {
+      loadData();
+      renderList();
+      updateStats();
+      attachEventListeners();
     }
 
-    // Countdown Timer Logic (Target: Sept 26, 9:00 AM)
-    const targetDate = new Date('September 26, 2026 09:00:00').getTime();
-
-    function updateTimer() {
-      const now = new Date().getTime();
-      const difference = targetDate - now;
-
-      if (difference > 0) {
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const mins = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-        const secs = Math.floor((difference % (1000 * 60)) / 1000);
-
-        document.getElementById('days').innerText = String(days).padStart(2, '0');
-        document.getElementById('hours').innerText = String(hours).padStart(2, '0');
-        document.getElementById('mins').innerText = String(mins).padStart(2, '0');
-        document.getElementById('secs').innerText = String(secs).padStart(2, '0');
+    function loadData() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          teammates = JSON.parse(saved);
+        } catch (e) {
+          teammates = createDefaultState();
+        }
       } else {
-        document.getElementById('timer').innerHTML = "<b>IT'S GAME TIME! GO GET THAT BID! 🥏</b>";
+        teammates = createDefaultState();
       }
     }
 
-    setInterval(updateTimer, 1000);
-    updateTimer();
-
-    // Disintegration Animation & Redirect Logic
-    function disintegrateAndOpen(element) {
-      if (element.getAttribute('data-disintegrating') === 'true') return;
-      element.setAttribute('data-disintegrating', 'true');
-
-      const rect = element.getBoundingClientRect();
-      const targetUrl = element.getAttribute('data-url');
-      const particleCount = 45;
-
-      // Spawn exploding particle dust
-      for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-
-        // Size & Color
-        const size = Math.random() * 8 + 4;
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
-        particle.style.background = Math.random() > 0.5 ? '#1488cc' : '#2b32b2';
-
-        // Initial position around box
-        const x = rect.left + Math.random() * rect.width;
-        const y = rect.top + Math.random() * rect.height;
-        particle.style.left = `${x}px`;
-        particle.style.top = `${y}px`;
-
-        // Blast trajectory
-        const angle = Math.random() * Math.PI * 2;
-        const distance = Math.random() * 120 + 40;
-        const dx = Math.cos(angle) * distance;
-        const dy = Math.sin(angle) * distance;
-
-        particle.style.setProperty('--dx', `${dx}px`);
-        particle.style.setProperty('--dy', `${dy}px`);
-
-        document.body.appendChild(particle);
-
-        setTimeout(() => particle.remove(), 600);
-      }
-
-      // Fade box out quickly
-      element.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-      element.style.opacity = '0';
-      element.style.transform = 'scale(0.8)';
-
-      // Open URL in new tab after particle burst
-      setTimeout(() => {
-        window.open(targetUrl, '_blank');
-        // Reset box so it re-appears if user returns to page
-        element.style.opacity = '1';
-        element.style.transform = 'none';
-        element.removeAttribute('data-disintegrating');
-      }, 450);
+    function createDefaultState() {
+      return DEFAULT_TEAMMATES.map((name, idx) => ({
+        id: 'tm_' + idx + '_' + Date.now(),
+        name: name,
+        checked: false
+      }));
     }
 
-    // Anonymous Shoutout Logic
-    function addShoutout() {
-      const input = document.getElementById('shoutoutInput');
-      const text = input.value.trim();
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(teammates));
+      updateStats();
+    }
+
+    function renderList() {
+      const query = searchInput.value.toLowerCase().trim();
+      checklistContainer.innerHTML = '';
+
+      const filtered = teammates.filter(t => {
+        const matchesQuery = t.name.toLowerCase().includes(query);
+        if (currentFilter === 'checked') return matchesQuery && t.checked;
+        if (currentFilter === 'unchecked') return matchesQuery && !t.checked;
+        return matchesQuery;
+      });
+
+      if (filtered.length === 0) {
+        emptyState.classList.remove('hidden');
+      } else {
+        emptyState.classList.add('hidden');
+        filtered.forEach(tm => {
+          const itemEl = document.createElement('div');
+          
+          itemEl.className = `sloth-checkbox flex items-center justify-between p-3.5 rounded-2xl linocut-card-sm transition-all cursor-pointer select-none ${
+            tm.checked
+              ? 'bg-pastel-sage/50 text-charcoal-900'
+              : 'bg-cream-50 text-charcoal-900 hover:bg-cream-200/50'
+          }`;
+
+          itemEl.onclick = (e) => {
+            if (e.target.closest('.action-btn')) return;
+            toggleCheck(tm.id);
+          };
+
+          itemEl.innerHTML = `
+            <div class="flex items-center gap-3.5 min-w-0 pr-2">
+              <div class="w-6 h-6 rounded-xl border-2 border-charcoal-900 flex items-center justify-center text-xs font-black transition ${
+                tm.checked ? 'bg-pastel-sage text-charcoal-900' : 'bg-cream-100'
+              }">
+                ${tm.checked ? '<i class="fa-solid fa-check"></i>' : ''}
+              </div>
+              <span class="font-extrabold text-sm sm:text-base truncate ${tm.checked ? 'line-through opacity-60' : ''}">
+                ${escapeHtml(tm.name)}
+              </span>
+            </div>
+            <div class="flex items-center gap-1 opacity-80 sm:opacity-0 hover:opacity-100 transition-opacity">
+              <button onclick="editMember('${tm.id}')" class="action-btn p-1.5 text-charcoal-800/60 hover:text-charcoal-900 rounded-lg transition" title="Rename">
+                <i class="fa-solid fa-pen text-xs"></i>
+              </button>
+              <button onclick="deleteMember('${tm.id}')" class="action-btn p-1.5 text-charcoal-800/60 hover:text-rose-600 rounded-lg transition" title="Remove">
+                <i class="fa-solid fa-trash-can text-xs"></i>
+              </button>
+            </div>
+          `;
+          checklistContainer.appendChild(itemEl);
+        });
+      }
+    }
+
+    function toggleCheck(id) {
+      const item = teammates.find(t => t.id === id);
+      if (item) {
+        item.checked = !item.checked;
+        saveData();
+        renderList();
+
+        // Confetti effect when 100% complete
+        const total = teammates.length;
+        const checked = teammates.filter(t => t.checked).length;
+        if (checked === total && total > 0 && item.checked) {
+          triggerConfetti();
+        }
+      }
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#ffb7b2', '#b5ead7', '#e2f0cb', '#ffdac1']
+        });
+      }
+    }
+
+    function updateStats() {
+      const total = teammates.length;
+      const checked = teammates.filter(t => t.checked).length;
+      const unchecked = total - checked;
+      const pct = total > 0 ? Math.round((checked / total) * 100) : 0;
+
+      checkedCountEl.textContent = checked;
+      totalCountEl.textContent = total;
+      percentageBadge.textContent = `${pct}%`;
+      progressBar.style.width = `${pct}%`;
+
+      badgeChecked.textContent = checked;
+      badgeUnchecked.textContent = unchecked;
+
+      tabCountAll.textContent = `(${total})`;
+      tabCountChecked.textContent = `(${checked})`;
+      tabCountUnchecked.textContent = `(${unchecked})`;
+
+      // Dynamic Sloth Mood Messages
+      if (pct === 0) {
+        slothMood.textContent = '🦥';
+        slothStatusText.textContent = "Chillin' & starting attendance...";
+      } else if (pct < 40) {
+        slothMood.textContent = '🌿';
+        slothStatusText.textContent = 'Slow & steady progress!';
+      } else if (pct < 80) {
+        slothMood.textContent = '🦥';
+        slothStatusText.textContent = 'Hanging in there! Almost done!';
+      } else if (pct < 100) {
+        slothMood.textContent = '✨';
+        slothStatusText.textContent = 'Just a few more teammates left!';
+      } else {
+        slothMood.textContent = '🎉';
+        slothStatusText.textContent = 'All done! Time for a sloth nap 💤';
+      }
+    }
+
+    window.editMember = function(id) {
+      const item = teammates.find(t => t.id === id);
+      if (!item) return;
+      const newName = prompt("Edit teammate name:", item.name);
+      if (newName !== null && newName.trim() !== '') {
+        item.name = newName.trim();
+        saveData();
+        renderList();
+      }
+    };
+
+    window.deleteMember = function(id) {
+      const item = teammates.find(t => t.id === id);
+      if (!item) return;
+      teammates = teammates.filter(t => t.id !== id);
+      saveData();
+      renderList();
+    };
+
+    function formatText(list) {
+      const format = formatSelect.value;
+
+      return list.map(item => {
+        const isChecked = item.checked;
+        switch (format) {
+          case 'emoji':
+            return `${isChecked ? '✅' : '❌'} ${item.name}`;
+          case 'brackets':
+            return `[${isChecked ? 'x' : ' '}] ${item.name}`;
+          case 'markdown':
+            return `- [${isChecked ? 'x' : ' '}] ${item.name}`;
+          case 'bullets':
+            return `• ${item.name}`;
+          case 'plain':
+          default:
+            return item.name;
+        }
+      }).join('\n');
+    }
+
+    function copyToClipboard(text, message = 'Copied to notes clipboard!') {
+      if (!text) {
+        showToast('Nothing to copy!');
+        return;
+      }
+
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
       
-      if (text) {
-        const shoutoutsList = document.getElementById('shoutoutsList');
-        const newCard = document.createElement('div');
-        newCard.className = 'shoutout-card';
-        newCard.innerText = `"${text}"`;
-        
-        shoutoutsList.prepend(newCard);
-        input.value = '';
+      try {
+        document.execCommand('copy');
+        showToast(message);
+      } catch (err) {
+        showToast('Failed to copy');
+      } finally {
+        document.body.removeChild(textarea);
       }
     }
+
+    function showToast(msg) {
+      toastMsg.textContent = msg;
+      
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function openModal() {
+      addModal.classList.remove('hidden');
+      setTimeout(() => {
+        addModal.classList.remove('opacity-0');
+        modalBox.classList.remove('scale-95');
+        modalBox.classList.add('scale-100');
+      }, 10);
+      modalInput.value = '';
+      modalInput.focus();
+    }
+
+    function closeModal() {
+      modalBox.classList.remove('scale-100');
+      modalBox.classList.add('scale-95');
+      addModal.classList.add('opacity-0');
+      setTimeout(() => {
+        addModal.classList.add('hidden');
+      }, 200);
+    }
+
+    function setFilter(filter) {
+      currentFilter = filter;
+      [tabAll, tabChecked, tabUnchecked].forEach(tab => {
+        if (tab.dataset.filter === filter) {
+          tab.classList.add('active');
+          tab.classList.remove('text-charcoal-800/70');
+        } else {
+          tab.classList.remove('active');
+          tab.classList.add('text-charcoal-800/70');
+        }
+      });
+      renderList();
+    }
+
+    function attachEventListeners() {
+      searchInput.addEventListener('input', () => {
+        clearSearchBtn.classList.toggle('hidden', !searchInput.value);
+        renderList();
+      });
+
+      clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        clearSearchBtn.classList.add('hidden');
+        renderList();
+        searchInput.focus();
+      });
+
+      // Filter Tab Events
+      tabAll.addEventListener('click', () => setFilter('all'));
+      tabChecked.addEventListener('click', () => setFilter('checked'));
+      tabUnchecked.addEventListener('click', () => setFilter('unchecked'));
+
+      btnCopyAll.addEventListener('click', () => {
+        const text = formatText(teammates);
+        copyToClipboard(text, `Copied all ${teammates.length} teammates! 🦥`);
+      });
+
+      btnCopyChecked.addEventListener('click', () => {
+        const checkedList = teammates.filter(t => t.checked);
+        const text = formatText(checkedList);
+        copyToClipboard(text, `Copied ${checkedList.length} present teammates! 🦥`);
+      });
+
+      btnCopyUnchecked.addEventListener('click', () => {
+        const uncheckedList = teammates.filter(t => !t.checked);
+        const text = formatText(uncheckedList);
+        copyToClipboard(text, `Copied ${uncheckedList.length} absent teammates! 🦥`);
+      });
+
+      btnAddMember.addEventListener('click', openModal);
+      closeModalBtn.addEventListener('click', closeModal);
+      cancelModalBtn.addEventListener('click', closeModal);
+
+      saveModalBtn.addEventListener('click', () => {
+        const input = modalInput.value.trim();
+        if (!input) return;
+
+        const names = input.split(/[\n,]+/).map(n => n.trim()).filter(n => n.length > 0);
+        
+        names.forEach(name => {
+          teammates.push({
+            id: 'tm_' + Date.now() + '_' + Math.random().toString(36).substring(2, 5),
+            name: name,
+            checked: false
+          });
+        });
+
+        saveData();
+        renderList();
+        closeModal();
+        showToast(`Added ${names.length} teammate(s)!`);
+      });
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+    }
+
+    window.onload = init;
   </script>
 </body>
 </html>
